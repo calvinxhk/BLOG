@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的博客系统</title>
+    <link rel="icon" href="/static/images/icon.jpg">
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css">
+</head>
+<body>
+    <div style="width: 100%">
+        <span>千里之行，始于足下。</span>
+        <span style="position: absolute;right: 20px">
+        {% if data %}
+
+            <a href="/home/{{ data.uid }}">{{ data.nickname }}</a>
+            {% if data.blogname %}
+                <a href="/blog/{{ data.blogname.blogname }}/">我的博客</a>
+            {% else %}
+                <a href="/blogregister.html">博客注册</a>
+            {% endif %}
+            <a href="/logout.html">退出登录</a>
+
+         {% else %}
+            <a href="/login.html">登录</a>
+            <a href="register.html">注册</a>
+        {% endif %}
+        </span>
+    </div>
+    <div class="page-header">
+  <h1>我的博客系统 <small>写够十万行代码</small></h1>
+</div>
+    <div class="col-lg-2">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <span class="badge">14</span>
+                Python
+            </li>
+            <li class="list-group-item">
+                <span class="badge">4</span>
+                Linux
+            </li>
+            <li class="list-group-item">
+                <span class="badge">14</span>
+                PHP
+            </li>
+            <li class="list-group-item">
+                <span class="badge">18</span>
+                GO
+            </li>
+        </ul>
+    </div>
+    <div class="col-lg-7"></div>
+    <div class="col-lg-3">
+        <div class="panel panel-default">
+      <div class="panel-heading">Panel heading without title</div>
+      <div class="panel-body">
+        Panel content
+      </div>
+    </div>
+        <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Panel title</h3>
+      </div>
+      <div class="panel-body">
+        Panel content
+      </div>
+    </div>
+    </div>
+
+
+
+</body>
+</html>

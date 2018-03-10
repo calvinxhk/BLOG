@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+     <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="icon" href="/static/images/icon.jpg">
+    <style>
+        .form-div {margin: 20px}
+    </style>
+</head>
+<body>
+<div style="width: 400px;position: relative;top: 50px;left: 400px">
+        <h1>用户登录</h1>
+
+        <form action="" method="POST" id="form" >
+            {% csrf_token %}
+            <div class="input-group form-div">
+                <span class="input-group-addon" id="basic-addon1">账号</span>
+                {{ form.name }}{{ form.name.errors.0 }}{{ msg }}
+            </div>
+            <div class="input-group form-div">
+                <span class="input-group-addon" id="basic-addon1">密码</span>
+                {{ form.pwd }}{{ form.pwd.errors.0 }}
+            </div>
+            <div class="input-group form-div">
+                <span class="input-group-addon" id="basic-addon1">验证码</span>
+                {{ form.piccode }}{{ form.piccode.errors.0 }}
+                <img id='piccode' src="/check_code/" title="点击更新" onclick="codeupdate()">
+            </div>
+            <div class="input-group" style="padding: 0 20px">
+                 <input type="submit" style="" value="登录" class="btn btn-primary">
+                 <input type="checkbox" name="logrecord" value="1" title="logrecord"> 三天免登陆
+                 <a href="/retrieve.html"> 忘记密码？</a>
+                 <a href="/register.html">账号注册</a>
+            </div>
+
+        </form>
+    </div>
+
+
+    <script>
+        function codeupdate() {
+            document.getElementById('piccode').src=document.getElementById('piccode').src +'?'
+        }
+
+    </script>
+</body>
+</html>

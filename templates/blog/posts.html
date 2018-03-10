@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>博客后台管理</title>
+
+</head>
+<body>
+
+<div style="width: 100%">
+        <span>千里之行，始于足下。</span>
+        <span style="position: absolute;right: 20px">
+
+
+            <a href="/home/{{ data.uid }}">{{ data.nickname }}</a>
+            {% if data.blogname %}
+                <a href="/blog/{{ data.blogname.blogname }}/">我的博客</a>
+            {% else %}
+                <a href="/blogregister.html">博客注册</a>
+            {% endif %}
+            <a href="/logout.html">退出登录</a>
+
+
+        </span>
+    </div>
+    <a href="/editor">发表新随笔</a>
+</body>
+</html>

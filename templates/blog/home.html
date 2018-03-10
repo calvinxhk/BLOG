@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人主页</title>
+    <link rel="icon" href="/static/images/icon.jpg">
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css">
+</head>
+<body>
+我是个人主页
+{{ data.name }}
+<img src="/{{ data.avatar|safe }}">
+<a href="/logout.html">退出登录</a>
+<a href="/blog/hhh_jj.html">我的博客</a>
+</body>
+</html>

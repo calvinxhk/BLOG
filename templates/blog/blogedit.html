@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>博客后台管理</title>
+    <link rel="icon" href="/static/images/icon.jpg">
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css">
+    {% block css %}{% endblock %}
+</head>
+<body>
+    <textarea id="editor_id" name="content" style="width:700px;height:300px;">
+    &lt;strong&gt;HTML内容&lt;/strong&gt;
+    </textarea>
+</body>
+<script charset="utf-8" src="/static/plugins/kindeditor/kindeditor-all.js"></script>
+<script charset="utf-8" src="/static/plugins/kindeditor/lang/zh-CN.js"></script>
+<script>
+        KindEditor.ready(function(K) {
+                window.editor = K.create('#editor_id');
+        });
+</script>
+    <script>
+
+        var options = {
+                cssPath : '/css/index.css',
+                filterMode : true
+        };
+        var editor = K.create('textarea[name="content"]', options);
+        html = editor.html();
+        editor.sync();
+        html = document.getElementById('editor_id').value;
+
+
+    </script>
+</html>

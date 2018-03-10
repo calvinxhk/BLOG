@@ -57,7 +57,7 @@ coverage.xml
 .media/
 local_settings.py
 migrations/
-
+.idea
 # Flask stuff:
 instance/
 .webassets-cache

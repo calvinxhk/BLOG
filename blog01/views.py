@@ -1,68 +1,43 @@
 from django.shortcuts import render,HttpResponse,redirect
 from django.conf.urls import url
-from blog01 import models,forms
-from statics.plugins.piccode import piccode
+from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
+from django.conf.urls.static import static
 from io import BytesIO
-import time
+from blog01 import models,forms
+from static.plugins.piccode import piccode
 
 
 def index(request):
-    '''
+    """
     主站页面
     :param request:
     :return:
-    '''
+    """
     if request.method =='GET':
-        uid = request.session.get('uid')
-        data = models.User.objects.filter(uid=uid).first()
-        return render(request,'blog/index.html',{'data':data})
-
-
-
-
-def logconfirm(wrapper):
-    '''
-    登录状态装饰器
-    :param wrapper:
-    :return:
-    '''
-    def fun(request,*args,**kwargs):
-        if request.session.get('uid'):
-            res = wrapper(request,*args,**kwargs)
-            return res
-        else:
-            return redirect('/login.html')
-    return fun
+        return render(request,'blog/index.html')
 
 
 def register(request):
-    '''
+    """
         注册函数，通过form组件验证和生成html，iframe伪造ajax上传图片，随机验证码，完成注册页面业务
 
         :param request:
         :return:
-        '''
+     """
     if request.method == 'GET':
         form = forms.Register(request)
         return render(request, 'blog/register.html', {'form': form, })
     else:
         form = forms.Register(request, request.POST, request.FILES)
         if form.is_valid():
-            name = form.cleaned_data.get('name')
-            data = models.User.objects.filter(name=name)
+            username = form.cleaned_data.get('username')
+            data = models.UserInfo.objects.filter(username=username)
             if not data:
-                form.cleaned_data.pop('pwd2')
+                form.cleaned_data.pop('password2')
                 form.cleaned_data.pop('piccode')
-                rg_time = time.time()
-                form.cleaned_data['rg_time'] = rg_time
-                import os
-                img = request.FILES.get('avatar')
-                file_path = os.path.join('static/images/avatar', str(time.time()) + img.name)
-                with open(file_path, 'wb') as f:
-                    for chun in img.chunks():
-                        f.write(chun)
-                form.cleaned_data['avatar'] = file_path
-                models.User.objects.create(**form.cleaned_data)
+                models.UserInfo.objects.create_user(**form.cleaned_data)
                 return redirect('/login.html')
             else:
                 msg = '账号已存在'
@@ -71,11 +46,11 @@ def register(request):
 
 
 def check_code(request):
-    '''
+    """
     返回验证图片
     :param request:
     :return:
-    '''
+    """
     img, code = piccode(120, 30)
     stream = BytesIO()
     img.save(stream, 'png')
@@ -84,42 +59,44 @@ def check_code(request):
     return HttpResponse(codedata)
 
 
-def login(request):
+def user_login(request):
     '''
         登录函数
         :param request:
         :return:
         '''
     if request.method == 'GET':
-        uid = request.session.get('uid')
-        if uid:
-            return redirect('/home/%s.html' % uid)
+        if  request.user.is_authenticated():
+            return redirect('/home/%s.html' % request.user.id)
         form = forms.Login(request)
         return render(request, 'blog/login.html', {'form': form})
     else:
         form = forms.Login(request, request.POST, request.FILES)
         if form.is_valid():
-            name = form.cleaned_data.get('name')
-            pwd = form.cleaned_data.get('pwd')
-            session = request.POST.get('logrecord')
-            data = models.User.objects.filter(name=name, pwd=pwd).first()
-            if data:
-                request.session['uid'] = data.uid
-                if session:
-                    request.session.set_expiry(259200)
-                return redirect('/home/%s.html' % data.uid)
-        form = forms.Login(request, request.POST)
-        msg = '用户名或密码错误'
-        return render(request, 'blog/login.html', {'form': form, 'msg': msg})
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    session = request.POST.get('logrecord')
+                    if session:
+                        request.session.set_expiry(259200)
+                return redirect('/home/%s.html' % user.id)
+            else:
+                form = forms.Login(request, request.POST)
+                msg = '用户名或密码错误'
+                return render(request, 'blog/login.html', {'form': form, 'msg': msg})
+        return render(request, 'blog/login.html', {'form': form})
 
 
-def logout(request):
+def user_logout(request):
     '''
     退出登录状态
     :param request:
     :return:
     '''
-    del request.session['uid']
+    logout(request)
     return redirect('/login.html')
 
 
@@ -144,87 +121,99 @@ def retrieve(request):
         return render(request,'blog/retrieve.html',{'form':form})
 
 
-def home(request,param):
-    '''
-    个人主页,展示个人详细信息
+def change_pwd(request):
+    """
+    修改密码
     :param request:
     :return:
-    '''
-    id = param
-    data = models.User.objects.filter(uid=id).first()
-    return render(request,'blog/home.html',{'data':data})
+    """
+    pass
 
 
-@logconfirm
-def blog_register(request):
-    '''
+def home(request,id):
+    """
+    个人主页,展示个人详细信息
+    :return:
+    """
+    user = models.UserInfo.objects.filter(id=id).first()
+    return render(request,'blog/home.html',{'user':user})
+
+
+@login_required
+def blog_register(request,):
+    """
     博客注册
     :param request:
     :return:
-    '''
+    """
     if request.method =='GET':
-        uid = request.session.get('uid')
-        data = models.User.objects.filter(uid=uid).first()
-        if not data.blogname:
-            form = forms.Blog(request)
-            return render(request,'blog/blog_register.html',{"form":form})
-        else:
-            return HttpResponse('已经注册过了')
+        form = forms.Blog(request)
+        return render(request,'blog/blog_register.html',{"form":form})
     else:
         form = forms.Blog(request,request.POST)
         if form.is_valid():
-            blogname = form.cleaned_data.get('name')
+            blogname = form.cleaned_data.get('blogname')
             data = models.BlogInfo.objects.filter(blogname=blogname)
             if not data:
-                import time
-                rgtime = time.time()
-                new = models.BlogInfo.objects.create(blogname=blogname,rgtime=rgtime)
-                uid = request.session.get('uid')
-                models.User.objects.filter(uid=uid).update(blogname=new)
+                user = models.UserInfo.objects.filter(id=request.user.id).first()
+                models.BlogInfo.objects.create(blogname=blogname,user=user)
                 return redirect('/blog/{}/'.format(blogname))
             else:
                 msg = '账号已被注册'
-        return render(request,'blog/blog_register.html',{"form":form,"msg":msg})
+                return render(request,'blog/blog_register.html',{"form":form,"msg":msg})
+        return render(request, 'blog/blog_register.html', {"form": form})
 
 
-def blog(request,param):
-    '''
-
+def blog(request,blogname):
+    """
+    博客主页
     :param request:
-    :param param: 博客id
+    :param param:
     :return:
-    '''
+    """
     if request.method == 'GET':
-
-        data = models.BlogInfo.objects.filter(blogname=param).first()
-
+        data = models.BlogInfo.objects.filter(blogname=blogname).first()
         if not data :
             return render(request,'blog/404.html')
-        return render(request,'blog/blog.html',{'param':param})
+        return render(request,'blog/blog.html',{'blogname':blogname})
 
-@logconfirm
+@login_required
 def posts(request):
-    uid = request.session.get('uid')
-    data = models.User.objects.filter(uid=uid).first()
-    return render(request,'blog/posts.html',{'data':data})
+    """
+    博客管理后台
+    :param request:
+    :return:
+    """
+    return render(request,'blog/posts.html')
 
-@logconfirm
+@login_required
 def editor(request):
-    return render(request,'blog/blogedit.html')
+    """
+    博客编辑页面
+    :param request:
+    :return:
+    """
+    if request.method=='GET':
+        return render(request,'blog/blogedit.html')
+
+
+
+
 
 urlpatterns=[
     url(r'^register\.html$',register),
     url(r'^check_code/',check_code),
-    url(r'^login\.html$',login),
+    url(r'^login\.html$',user_login),
     url(r'^home/(\d+)\.html$',home),
-    url(r'^logout\.html$',logout),
+    url(r'^logout\.html$',user_logout),
     url(r'^retrieve\.html$',retrieve),
-    url(r'^blogregister\.html$',blog_register),
+    url(r'^blogregister/(\d+)\.html$',blog_register),
     url(r'^blog/(.*)/$',blog),
     url(r'^posts$',posts),
     url(r'^editor$',editor),
-    url(r'', index)
-]
+
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)+[url(r'',index)]
 
 
 

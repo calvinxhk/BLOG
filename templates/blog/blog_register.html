@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>申请博客</title>
-    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css">
-    <link rel="icon" href="/static/images/icon.jpg">
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="icon" href="/static/images/logo.jpg">
     <style>
         .form-div {margin: 20px}
     </style>
@@ -18,7 +18,7 @@
             {% csrf_token %}
             <div class="input-group form-div">
                 <span class="input-group-addon" id="basic-addon1">博客账号</span>
-                {{ form.name }}{{ form.name.errors.0 }}{{ msg }}
+                {{ form.blogname }}{{ form.blogname.errors.0 }}{{ msg }}
             </div>
             <div class="input-group form-div">
 

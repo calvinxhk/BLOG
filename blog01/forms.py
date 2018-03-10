@@ -6,17 +6,17 @@ class Register(Form):
     '''
     用户注册表单验证
     '''
-    name = fields.CharField(
+    username = fields.CharField(
         min_length=6,max_length=16,
         error_messages={'required':'用户名不能为空','min_length':'用户名至少6个字符'},
         widget=widgets.TextInput(attrs={'class':'form-control','aria-describedby':'basic-addon1'}))
 
-    pwd = fields.CharField(
+    password = fields.CharField(
         max_length=16,min_length=6,
         error_messages={'required':'密码不能为空',"invalid":'不能包含非法字符','min_length':'密码至少6个字符'},
         widget=widgets.PasswordInput(attrs={'class':'form-control','aria-describedby':'basic-addon1'}))
 
-    pwd2 = fields.CharField(
+    password2 = fields.CharField(
         max_length=16, min_length=6,
         error_messages={'required': '密码不能为空', "invalid": '不能包含非法字符'},
         widget=widgets.PasswordInput(attrs={'class': 'form-control', 'aria-describedby': 'basic-addon1'}))
@@ -73,11 +73,11 @@ class Login(Form):
     '''
     用户登录表单验证
     '''
-    name = fields.CharField(
+    username = fields.CharField(
         min_length=4, max_length=16,
         error_messages={'required': '用户名不能为空', 'min_length': '用户名至少6个字符'},
         widget=widgets.TextInput(attrs={'class': 'form-control', 'aria-describedby': 'basic-addon1'}))
-    pwd = fields.CharField(
+    password = fields.CharField(
         max_length=16, min_length=6,
         error_messages={'required': '密码不能为空', "invalid": '不能包含非法字符', 'min_length': '密码至少6个字符'},
         widget=widgets.PasswordInput(attrs={'class': 'form-control', 'aria-describedby': 'basic-addon1'}))
@@ -144,8 +144,8 @@ class Retrieve(Form):
 
 
 class Blog(Form):
-    name = fields.CharField(min_length=2,max_length=16,
-                            error_messages={'required': '用户名不能为空', 'min_length': '用户名至少6个字符'},
+    blogname = fields.CharField(min_length=2,max_length=16,
+                            error_messages={'required': '博客名不能为空', 'min_length': '用户名至少6个字符'},
                             widget=widgets.TextInput(
                                 attrs={'class': 'form-control', 'aria-describedby': 'basic-addon1'})
                             )

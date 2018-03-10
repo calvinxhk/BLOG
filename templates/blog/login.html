@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>登录页面</title>
-     <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css">
+     <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     <link rel="icon" href="/static/images/icon.jpg">
     <style>
         .form-div {margin: 20px}
@@ -17,11 +17,11 @@
             {% csrf_token %}
             <div class="input-group form-div">
                 <span class="input-group-addon" id="basic-addon1">账号</span>
-                {{ form.name }}{{ form.name.errors.0 }}{{ msg }}
+                {{ form.username }}{{ form.username.errors.0 }}{{ msg }}
             </div>
             <div class="input-group form-div">
                 <span class="input-group-addon" id="basic-addon1">密码</span>
-                {{ form.pwd }}{{ form.pwd.errors.0 }}
+                {{ form.password }}{{ form.password.errors.0 }}
             </div>
             <div class="input-group form-div">
                 <span class="input-group-addon" id="basic-addon1">验证码</span>

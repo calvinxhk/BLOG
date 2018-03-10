@@ -17,14 +17,14 @@
             {% csrf_token %}
             <div class="input-group form-div">
                 <span class="input-group-addon" id="basic-addon1">账号</span>
-                {{ form.name }}{{ form.name.errors.0 }}{{ msg }}
+                {{ form.username }}{{ form.username.errors.0 }}{{ msg }}
             </div>
             <div class="input-group form-div">
                 <span class="input-group-addon" id="basic-addon1">密码</span>
-                {{ form.pwd }}{{ form.pwd.errors.0 }}</div>
+                {{ form.password }}{{ form.password.errors.0 }}</div>
             <div class="input-group form-div">
                 <span class="input-group-addon" id="basic-addon1">确认密码</span>
-                {{ form.pwd2 }}{{ form.pwd2.errors.0 }}</div>
+                {{ form.password2 }}{{ form.password2.errors.0 }}</div>
             <div class="input-group form-div">
                 <span class="input-group-addon" id="basic-addon1">昵称</span>
                 {{ form.nickname }}{{ form.nickname.errors.0 }}

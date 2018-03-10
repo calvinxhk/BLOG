@@ -3,26 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>我的博客系统</title>
-    <link rel="icon" href="/static/images/icon.jpg">
+     <link rel="icon" href="/static/images/logo.jpg">
     <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css">
 </head>
 <body>
     <div style="width: 100%">
         <span>千里之行，始于足下。</span>
         <span style="position: absolute;right: 20px">
-        {% if data %}
+        {% if user.is_authenticated %}
+            欢迎：{{ user.username }}
 
-            <a href="/home/{{ data.uid }}">{{ data.nickname }}</a>
-            {% if data.blogname %}
-                <a href="/blog/{{ data.blogname.blogname }}/">我的博客</a>
-            {% else %}
-                <a href="/blogregister.html">博客注册</a>
-            {% endif %}
+            <a href="/home/{{ user.id }}.html">我的主页</a>
             <a href="/logout.html">退出登录</a>
 
          {% else %}
             <a href="/login.html">登录</a>
-            <a href="register.html">注册</a>
+            <a href="/register.html">注册</a>
         {% endif %}
         </span>
     </div>

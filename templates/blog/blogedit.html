@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>博客后台管理</title>
-    <link rel="icon" href="/static/images/icon.jpg">
-    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="icon" href="/static/images/logo.jpg">
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     {% block css %}{% endblock %}
 </head>
 <body>
-    <textarea id="editor_id" name="content" style="width:700px;height:300px;">
-    &lt;strong&gt;HTML内容&lt;/strong&gt;
-    </textarea>
+    <div class="2"></div>
+    <div>
+        <h1>博客编辑区域</h1>
+        <form action="/article/" name="article">
+            <textarea id="editor_id" name="content" style="width:700px;height:300px;">
+            &lt;strong&gt;HTML内容&lt;/strong&gt;
+            </textarea>
+            </form>
+        </div>
 </body>
 <script charset="utf-8" src="/static/plugins/kindeditor/kindeditor-all.js"></script>
 <script charset="utf-8" src="/static/plugins/kindeditor/lang/zh-CN.js"></script>
@@ -19,7 +25,7 @@
                 window.editor = K.create('#editor_id');
         });
 </script>
-    <script>
+<script>
 
         var options = {
                 cssPath : '/css/index.css',

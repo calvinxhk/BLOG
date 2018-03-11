@@ -2,65 +2,85 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>我的博客系统</title>
-     <link rel="icon" href="/static/images/logo.jpg">
+    <title>python空间</title>
+    <link rel="icon" href="/static/images/logo.jpg">
     <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <script src="/static/plugins/jquery-3.2.1.js"></script>
+    <script src="/static/plugins/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
 </head>
 <body>
-    <div style="width: 100%">
-        <span>千里之行，始于足下。</span>
-        <span style="position: absolute;right: 20px">
-        {% if user.is_authenticated %}
-            欢迎：{{ user.username }}
+    {% include 'blog/header.html' %}
 
-            <a href="/home/{{ user.id }}.html">我的主页</a>
-            <a href="/logout.html">退出登录</a>
+    <div  style="height: 50px">ff</div>
 
-         {% else %}
-            <a href="/login.html">登录</a>
-            <a href="/register.html">注册</a>
-        {% endif %}
-        </span>
-    </div>
-    <div class="page-header">
-  <h1>我的博客系统 <small>写够十万行代码</small></h1>
-</div>
+    <div class="jumbotron" style="background-image: url(/static/images/header.jpg);background-position:center;height: 250px"></div>
+
     <div class="col-lg-2">
-        <ul class="list-group">
-            <li class="list-group-item">
-                <span class="badge">14</span>
-                Python
-            </li>
-            <li class="list-group-item">
-                <span class="badge">4</span>
-                Linux
-            </li>
-            <li class="list-group-item">
-                <span class="badge">14</span>
-                PHP
-            </li>
-            <li class="list-group-item">
-                <span class="badge">18</span>
-                GO
-            </li>
-        </ul>
-    </div>
-    <div class="col-lg-7"></div>
-    <div class="col-lg-3">
         <div class="panel panel-default">
-      <div class="panel-heading">Panel heading without title</div>
-      <div class="panel-body">
-        Panel content
-      </div>
+          <div class="panel-heading">内容分区</div>
+          <ul class="list-group">
+              {% for c in category_list %}
+                   <li class="list-group-item">{{ c.0}}<span class="badge">{{ c.1 }}</span></li>
+              {% endfor %}
+
+          </ul>
+        </div>
     </div>
+    <div class="col-lg-8">
+    <ul class="nav nav-pills ">
+      <li role="presentation"><a href="#">最新博客</a></li>
+      <li role="presentation"><a href="#">最新新闻</a></li>
+      <li role="presentation"><a href="#">深度阅读</a></li>
+    </ul>
+
+        {% for obj in data %}
+        <div style="width: 100%;margin-bottom: 50px;border-bottom:gainsboro 2px solid ">
+            <div style="width: 100%;height: 30px">
+                <a href="/read/{{ obj.blog.blogname }}/{{ obj.id }}/"><h3>{{ obj.title }} <span class="label label-default">{{ obj.category.title }}</span></h3></a><br><br>
+            </div>
+            <div style="width: 100%;height: 120px;margin-top: 30px">
+                <a href="/home/{{ obj.id }}/">
+                    <img src="/../media/{{ obj.blog.user.avatar }}" style="width: 120px;height: 120px;border-radius: 50%">
+                </a>
+               <span style="line-height: 120px;margin-left: 20px">摘要：{{ obj.summary }}</span>
+            </div>
+
+
+            <ul class="nav nav-pills" style="margin: 10px 0">
+
+                <li role="presentation" ><a href="#" title="赞"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span><span class="badge">{{ obj.up_count }}</span></a></li>
+                <li role="presentation" ><a href="#" title="踩"><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span><span class="badge">{{ obj.down_count }}</span></a></li>
+                <li role="presentation" ><a href="#" title="点击量"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span><span class="badge">{{ obj.read_count }}</span></a></li>
+                <li role="presentation" ><a href="#" title="评论数"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span><span class="badge">{{ obj.comment_count }}</span></a></li>
+                <li role="presentation" ><a href="#" title="发表时间"><span class="glyphicon glyphicon-time" aria-hidden="true"></span><span class="badge">{{ obj.create_time }}</span></a></li>
+
+
+
+
+            </ul>
+
+        </div>
+        {% endfor %}
+
+    </div>
+    <div class="col-lg-2">
+
         <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Panel title</h3>
-      </div>
-      <div class="panel-body">
-        Panel content
-      </div>
-    </div>
+          <div class="panel-heading">最热文章推荐</div>
+          <ul class="list-group">
+            {% for c in hot_article %}
+                <li class="list-group-item"><a href="/read/{{ c.blog.blogname }}/{{ c.id }}/">{{ c.title}}</a><</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">博客排行榜</div>
+          <ul class="list-group">
+              {% for c in hot_blog %}
+                  <li class="list-group-item"><a href="/blog/{{ c.blogname }}/">{{ c.blogname }}</a> </li>
+              {% endfor %}
+          </ul>
+        </div>
     </div>
 
 

@@ -9,14 +9,8 @@
 <body>
 我是个人主页
 {{ user.nickname }}
-<img src="../media/{{ user.avatar }}" alt="你的头像">
-<a href="/logout.html">退出登录</a>
-{% if user.bloginfo %}
-<a href="/blog/{{ user.id }}.html">我的博客</a>
-{% else %}
+<img src="/../media/{{ user.avatar }}/" alt="你的头像">
+<a href="/editor/">写博客</a>
 
-    <a href="/blogregister/{{ user.id }}.html">申请博客</a>
-
-{% endif %}
 </body>
 </html>

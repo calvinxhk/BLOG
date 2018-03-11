@@ -1,6 +1,6 @@
+from django import forms
 from django.forms import Form,fields,widgets
 from django.core.exceptions import ValidationError
-
 
 class Register(Form):
     '''
@@ -55,15 +55,15 @@ class Register(Form):
 
 
     def clean_piccode(self):
-        inputcode = self.cleaned_data['piccode']
-        turecode = self.request.session['piccode']
+        inputcode = self.cleaned_data.get('piccode')
+        turecode = self.request.session.get('piccode')
         if inputcode == turecode:
             return inputcode
         raise ValidationError('验证码错误')
 
-    def clean_pwd2(self):
-        pwd = self.cleaned_data['pwd']
-        pwd2 = self.cleaned_data['pwd2']
+    def clean_password2(self):
+        pwd = self.cleaned_data.get('password')
+        pwd2 = self.cleaned_data.get('password2')
         if pwd==pwd2:
             return pwd
         raise ValidationError('两次密码不一致')
@@ -144,8 +144,12 @@ class Retrieve(Form):
 
 
 class Blog(Form):
+    """
+    博客申请表单
+    """
     blogname = fields.CharField(min_length=2,max_length=16,
-                            error_messages={'required': '博客名不能为空', 'min_length': '用户名至少6个字符'},
+                            error_messages={'required': '博客名不能为空', 'min_length': '用户名至少6个字符'
+                                , "invalid": '博客名只能由字母数字下划线组成'},
                             widget=widgets.TextInput(
                                 attrs={'class': 'form-control', 'aria-describedby': 'basic-addon1'})
                             )
@@ -169,3 +173,34 @@ class Blog(Form):
         if inputcode == turecode:
             return inputcode
         raise ValidationError('验证码错误')
+
+    def clean_blogname(self):
+        import re
+        blogname = self.cleaned_data.get('blogname')
+        res = re.match('[a-zA-Z0-9_]+',blogname).group()
+        if res == blogname:
+            return blogname
+        else:
+            raise ValidationError('博客名只能由字母数字下划线组成!')
+
+
+
+class Article(Form):
+    """
+    博客发表表单
+    """
+    title = fields.CharField(min_length=1,max_length=128,
+        error_messages={'required':'标题名不能为空'},
+        widget=widgets.TextInput(attrs={'class':'form-control','aria-describedby':'basic-addon1'}))
+    summary = fields.CharField(min_length=1,max_length=255,
+        error_messages={'required':'简介不能为空'},
+        widget=widgets.TextInput(attrs={'class':'form-control','aria-describedby':'basic-addon1'}))
+    content = fields.CharField(
+        error_messages={'required':'分类不能为空'},
+        widget=forms.Textarea(attrs={'class':'form-control','aria-describedby':'basic-addon1'}))
+
+    def clean_content(self):
+        content = self.cleaned_data.get('content')
+        from utils.xss import clean
+        content = clean(content)
+        return content

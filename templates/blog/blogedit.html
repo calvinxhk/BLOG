@@ -5,37 +5,54 @@
     <title>博客后台管理</title>
     <link rel="icon" href="/static/images/logo.jpg">
     <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.min.css">
-    {% block css %}{% endblock %}
+    <script charset="utf-8" src="/static/plugins/kindeditor/kindeditor-all.js"></script>
+    <script charset="utf-8" src="/static/plugins/kindeditor/lang/zh-CN.js"></script>
+    <script>
+        KindEditor.ready(function(K) {
+                window.editor = K.create('#id_content',{
+                    width:'100%',
+                    height:'400px',
+                    uploadJson:'/upload/',
+                    extraFileUploadParams:{
+                        'csrfmiddlewaretoken':'{{ csrf_token }}'
+                    },
+                    items:[
+                        'source',  'undo', 'redo','preview', 'print', 'code', 'cut', 'copy', 'paste',
+                        'plainpaste', 'wordpaste',  'justifyleft', 'justifycenter', 'justifyright',
+                        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent',
+                        'subscript', 'superscript', 'clearhtml', 'quickformat', 'fullscreen', '/',
+                        'formatblock', 'fontname', 'fontsize',  'forecolor', 'hilitecolor', 'bold',
+                        'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', 'image',
+                        'multiimage',  'table', 'hr', 'emoticons', 'baidumap', 'pagebreak', 'anchor',
+                        'link', 'unlink'
+                    ]
+                });
+        });
+
+</script>
 </head>
 <body>
-    <div class="2"></div>
-    <div>
+    <div class="col-lg-2"></div>
+    <div class="col-lg-8">
         <h1>博客编辑区域</h1>
-        <form action="/article/" name="article">
-            <textarea id="editor_id" name="content" style="width:700px;height:300px;">
-            &lt;strong&gt;HTML内容&lt;/strong&gt;
-            </textarea>
+        <form action="/editor/" name="article" method="POST" id="content">
+            {% csrf_token %}
+            标题{{ editor_form.title }}
+            简介{{ editor_form.summary }}
+            {% for i in category %}
+                <input type="radio" name="category" value="{{ i.title }}">{{ i.title }}<br>
+            {% endfor %}
+        分类
+        {{ editor_form.category }}
+            文章内容：{{ editor_form.content }}
+            <a onclick="editor.sync();document.getElementById('content').submit()" >提交</a>
             </form>
         </div>
+        <div>
+            {{ content|safe }}
+        </div>
 </body>
-<script charset="utf-8" src="/static/plugins/kindeditor/kindeditor-all.js"></script>
-<script charset="utf-8" src="/static/plugins/kindeditor/lang/zh-CN.js"></script>
-<script>
-        KindEditor.ready(function(K) {
-                window.editor = K.create('#editor_id');
-        });
-</script>
-<script>
-
-        var options = {
-                cssPath : '/css/index.css',
-                filterMode : true
-        };
-        var editor = K.create('textarea[name="content"]', options);
-        html = editor.html();
-        editor.sync();
-        html = document.getElementById('editor_id').value;
 
 
-    </script>
+
 </html>

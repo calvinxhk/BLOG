@@ -11,6 +11,9 @@ class UserInfo(User):
     avatar = models.ImageField(verbose_name='头像',upload_to='img', null=True)
     fans = models.ManyToManyField(verbose_name='粉丝', to='UserInfo', related_name='f')
 
+    def __str__(self):
+        return 'id{}----用户名{}'.format(self.id,self.username)
+
 
 class UserFans(models.Model):
     """
@@ -23,6 +26,8 @@ class UserFans(models.Model):
         unique_together = [
             ('user', 'followers'),
         ]
+    def __str__(self):
+        return '博主{}------粉丝{}'.format(self.user.username,self.followers.username)
 
 
 class BlogInfo(models.Model):
@@ -33,6 +38,9 @@ class BlogInfo(models.Model):
     rgtime = models.DateTimeField(verbose_name='注册时间',auto_now_add=True, null=True)
     blogmodel = models.ForeignKey(verbose_name='博客模板',to='BlogModel',default=1)
     user = models.OneToOneField(verbose_name='博客主人',to='UserInfo',  null=True)
+
+    def __str__(self):
+        return '博客名{}-------博主账号{}'.format(self.blogname,self.user.username)
 
 
 class BlogArticleInfo(models.Model):
@@ -49,13 +57,19 @@ class BlogArticleInfo(models.Model):
     create_time = models.DateTimeField(verbose_name='发表时间',auto_now_add=True, null=True)
     category = models.ForeignKey(verbose_name='文章类型', to="Category", null=True)
 
+    def __str__(self):
+        return '博客名{}----文章标题{}'.format(self.blog.blogname,self.title)
+
 
 class Category(models.Model):
     """
     个人文章分类表
     """
-    title = models.CharField(verbose_name='分类标题', max_length=32, null=True)
+    title = models.CharField(verbose_name='分类标题', max_length=32, null=True,unique=True)
     blog = models.ForeignKey(verbose_name='所属博客', to='BlogInfo', null=True)
+
+    def __str__(self):
+        return '分类标题 {}----博客名{}'.format(self.title,self.blog.blogname)
 
 
 class BlogArticle(models.Model):
@@ -64,6 +78,9 @@ class BlogArticle(models.Model):
     """
     aid = models.OneToOneField(verbose_name='文章信息',to='BlogArticleInfo', null=True)
     article = models.TextField(verbose_name='文章内容', null=True)
+
+    def __str__(self):
+        return '{}'.format(self.aid.title)
 
 
 class Comment(models.Model):
@@ -76,6 +93,9 @@ class Comment(models.Model):
     content = models.TextField(verbose_name='评论内容', null=True)
     time = models.DateTimeField(verbose_name='评论时间',auto_now_add=True, null=True)
 
+    def __str__(self):
+        return '评论者{} ----评论文章{}'.format(self.user.username,self.article.title)
+
 
 class BlogModel(models.Model):
     """
@@ -83,3 +103,5 @@ class BlogModel(models.Model):
     """
     blogmodelname = models.CharField(verbose_name='模板名称',max_length=16,null=True)
     blogmodel = models.TextField(verbose_name='模板内容', null=True)
+    def __str__(self):
+        return '{}'.format(self.blogmodelname)

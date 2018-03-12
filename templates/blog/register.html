@@ -1,113 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
-    <meta charset="UTF-8">
-    <title>注册页面</title>
-    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css">
-    <link rel="icon" href="/static/images/icon.jpg">
-    <style>
-        .form-div {margin: 20px}
-    </style>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python 空间注册</title>
+<link rel="stylesheet" type="text/css" href="/static/css/component.css" />
+<link rel="icon" href="/static/images/logo.jpg">
+<script src="/static/js/html5.js"></script>
 </head>
 <body>
-  <div style="width: 400px;position: relative;top: 50px;left: 400px">
-        <h1>用户注册</h1>
+		<div class="container demo-1">
+			<div class="content">
+				<div id="large-header" class="large-header">
+					<canvas id="demo-canvas"></canvas>
+					<div class="logo_box">
+						<form action="" name="f" method="POST" id="form" autocomplete="off">
+                            {% csrf_token %}
+                            <h3>欢迎注册Python空间</h3>
+                            {{ form.username.errors.0 }}
+							<div class="input_outer">
+								<span class="u_user"></span>
+                                <input style="display:none" type="text" name="fakeusernameremembered"/>
+                                {{ form.username }}{{ msg }}
+							</div>
+                            {{ form.password.errors.0 }}
+							<div class="input_outer">
+								<span class="us_uer"></span>
+                                <input style="display:none" type="password" name="fakepasswordremembered"/>
+								{{ form.password }}
+							</div>
+                            {{ form.password2.errors.0 }}
+							<div class="input_outer">
+								<span class="us_uer"></span>
+                                <input style="display:none" type="password" name="fakepasswordremembered"/>
+								{{ form.password2 }}
+							</div>
+                            {{ form.piccode.errors.0 }}
+                            <div class="input_outer" style="position: relative">
+                                <span class="u_code"></span>
+                                <input style="display:none" type="text" name="fakeusernameremembered"/>
+								{{ form.piccode }}
 
-        <form action="" method="POST" id="form" enctype="multipart/form-data" >
-            {% csrf_token %}
-            <div class="input-group form-div">
-                <span class="input-group-addon" id="basic-addon1">账号</span>
-                {{ form.username }}{{ form.username.errors.0 }}{{ msg }}
-            </div>
-            <div class="input-group form-div">
-                <span class="input-group-addon" id="basic-addon1">密码</span>
-                {{ form.password }}{{ form.password.errors.0 }}</div>
-            <div class="input-group form-div">
-                <span class="input-group-addon" id="basic-addon1">确认密码</span>
-                {{ form.password2 }}{{ form.password2.errors.0 }}</div>
-            <div class="input-group form-div">
-                <span class="input-group-addon" id="basic-addon1">昵称</span>
-                {{ form.nickname }}{{ form.nickname.errors.0 }}
-            </div>
-            <div class="input-group form-div">
-                <span class="input-group-addon" id="basic-addon1">邮箱</span>
-                {{ form.email }}{{ form.email.errors.0 }}
-            </div>
-            <div class="input-group form-div">
-                <span class="input-group-addon" id="basic-addon1">手机号</span>
-                {{ form.phone }}{{ form.phone.errors.0 }}</div>
-            <div class="input-group form-div">
-                <span class="input-group-addon" id="basic-addon1">验证码</span>
-                {{ form.piccode }}{{ form.piccode.errors.0 }}
-                <img id='piccode' src="/check_code/" title="点击更新" onclick="codeupdate()">
-            </div>
-            <div class="input-group"  style="position: absolute;top:0;left: 450px;padding: 5px;border: 1px solid #b9def0;border-radius: 50%">
-                <img id='image' src="/static/images/avatar.png" name="image" style="display: inline-block;width: 200px;height: 200px;border-radius: 50%">
-                {{ form.avatar }}
-            </div>
-            <iframe name="window" id='window' style="display: none"></iframe>
-            <div class="input-group" style="padding: 0 20px">
-                 <input type="submit" style="" value="注册" class="btn btn-primary">
-            </div>
+                                <img id='piccode' src="/check_code/" title="点击更新" onclick="codeupdate()">
+							</div>
 
-        </form>
-    </div>
-
-
-    <script>
+                            <div class="mb2"><a href="javascript:" class="act-but submit" onclick="document.getElementById('form').submit()" style="color: #FFFFFF">立即注册</a></div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="/static/js/TweenLite.min.js"></script>
+		<script src="/static/js/EasePack.min.js"></script>
+		<script src="/static/js/rAF.js"></script>
+		<script src="/static/js/demo-1.js"></script>
+        <script>
         function codeupdate() {
             document.getElementById('piccode').src=document.getElementById('piccode').src +'?'
         }
-       document.getElementById('id_avatar').onchange=function () {
-           var img = this.files[0];
-           var rn = /image\/jpeg|image\/png/i;
-           if (rn.test(img.type)){
-               if (  window.URL.createObjectURL){
-                   avatarshow2(img)
-               }
-               else if(new FileReader()){
-                   avatarshow(img)
-               }
-               else {
-                   avatarsend()
-               }}
-           else {alert('请选择jpeg或png图片！');this.value=''}
-       };
-       function avatarsend() {
-           var form = document.getElementById('form');
-            form.action='/register/avatar/';
-            form.enctype='multipart/form-data';
-            form.target='window';
-            form.submit();
-            var iframe = document.getElementById('window');
-                iframe.onload=function () {
-
-                document.getElementById('image').src='/'+this.contentWindow.document.body.innerText
-            }
-
-
-
-       }
-       function avatarshow(img) {
-       var reader = new FileReader();
-           reader.readAsDataURL(img);
-       console.log(reader.result);
-           reader.onload=function () {
-               document.getElementById('image').src=this.result
-           }
-       }
-       function avatarshow2(img) {
-           var avatarurl = window.URL.createObjectURL(img);
-           var image =document.getElementById('image');
-           image.src=avatarurl;
-           image.onload = function () {
-               window.URL.revokeObjectURL(img)
-           }
-
-
-
-       }
 
     </script>
-</body>
+	</body>
 </html>

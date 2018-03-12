@@ -17,18 +17,12 @@
 					<div class="logo_box">
 						<form action="" name="f" method="POST" id="form" autocomplete="off">
                             {% csrf_token %}
-                            <h3>欢迎进入Python空间</h3>
-                            {{ form.username.errors.0 }}
+                            <h3>欢迎注册Python空间的博客</h3>
+                            {{ form.blogname.errors.0 }}{{ msg }}
 							<div class="input_outer">
 								<span class="u_user"></span>
                                 <input style="display:none" type="text" name="fakeusernameremembered"/>
-                                {{ form.username }}{{ msg }}
-							</div>
-                            {{ form.password.errors.0 }}
-							<div class="input_outer">
-								<span class="us_uer"></span>
-                                <input style="display:none" type="password" name="fakepasswordremembered"/>
-								{{ form.password }}
+                                {{ form.blogname }}
 							</div>
                             {{ form.piccode.errors.0 }}
                             <div class="input_outer" style="position: relative">
@@ -38,12 +32,7 @@
 
                                 <img id='piccode' src="/check_code/" title="点击更新" onclick="codeupdate()">
 							</div>
-                            <div class="input_outer">
-                                <span class="u_boom"></span>
-                                 <a style="display: inline-block;text-decoration: none;width: 170px;color: white;text-align: center;line-height: 50px" href="/retrieve/"> 忘记密码？</a>
-                                 <a style="display: inline-block;text-decoration: none;width: 170px;color:white;text-align: center;line-height: 50px"  href="/register/">账号注册</a>
-							</div>
-                            <div class="mb2"><a href="javascript:" class="act-but submit" onclick="document.getElementById('form').submit()" style="color: #FFFFFF">登录</a></div>
+                            <div class="mb2"><a href="javascript:" class="act-but submit" onclick="document.getElementById('form').submit()" style="color: #FFFFFF">立即注册</a></div>
 						</form>
 					</div>
 				</div>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="邢怀康">
+    <meta name="keywords" content="博客，新闻">
+    <meta name="description" content="Python博客门户网站">
+    <title>python空间</title>
+    <link rel="icon" href="/static/images/logo.jpg">
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/mycss.css">
+    <script src="/static/plugins/jquery-3.2.1.js"></script>
+    <script src="/static/plugins/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+<style>
+    a{text-decoration: none!important;}
+</style>
+    {% block css %}{% endblock %}
+</head>
+<body>
+<div >
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Python 空间</a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+          <li>
+              <form class="navbar-form navbar-left">
+                  <div class="form-group">
+                      <input type="text" class="form-control" placeholder="站内文章">
+                  </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+              </form>
+          </li>
+
+
+          {% if user.is_authenticated %}
+              {% if user.userinfo.bloginfo %}
+                <li><a href="/editor/">写博客</a></li>
+                  {% else %}
+                  <li><a href="/blogregister/">写博客</a></li>
+                  {% endif %}
+              {% if user.userinfo.avatar %}
+                <li class="dropdown"><img src="/../media/{{ user.userinfo.avatar }}/" alt="头像" style="width: 50px;height: 50px;border-radius: 20%"> </li>
+              {% else %}
+                  <li class="dropdown"><img src="/static/images/avatar.png" alt="头像" style="width: 50px;height: 50px;border-radius: 20%"> </li>
+             {% endif %}
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                  {{ user.username }} <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                  <li><a href="/home/{{ user.id }}/">我的主页</a></li>
+                  {% if user.userinfo.bloginfo.blogname  %}
+                    <li><a href="/blog/{{  user.userinfo.bloginfo.blogname }}/">我的博客</a></li>
+                      {% else %}
+                      <li><a href="/blogregister/">申请博客</a></li>
+                      {% endif %}
+                <li><a href="/information/{{ user.id }}/">修改个人信息</a></li>
+                <li><a href="#">我的深度</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="/logout/">退出登录</a></li>
+              </ul>
+              </li>
+          {% else %}<li><a href="/login/">写博客</a></li>
+              <li><a href="/login/">登录</a></li>
+              <li><a href="/register/">注册</a></li>
+          {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+</div>
+<div style="width: 100%;height: 50px">header</div>
+{% block html %}{% endblock %}
+
+<div>
+    <div class="foot-nav" >
+            <a href="javascript:" >关于我</a>
+            <span>|</span>
+            <a href="javascript:" >联系我</a>
+            <span>|</span>
+            <a href="javascript:" >服务条款</a>
+            <span>|</span>
+            <a href="javascript:" >隐私政策</a>
+            <span>|</span>
+            <a href="javascript:" >意见与反馈</a>
+            <span>|</span>
+            <a href="javascript:" >友情链接</a>
+            <span>|</span>
+            <a href="javascript:" >公告</a>
+            </div>
+    <div class="foot-nav2">
+            <a href="javascript:" class="foot_b">京ICP备09053974号-3 京公网安备 110102004562</a>
+            <div >
+                <span class="foot_d">违法和不良信息举报：</span>
+                <span class="foot_a">电话：110 或者 手机：13538836494  </span>
+                <span class="foot_a" style="margin-left: 15px;">邮箱：<a style="color: #369;margin-right: 10px;" href="javascript:">13538836494@163.com</a> </span>
+            </div>
+            <div >版权所有：邢怀康</div>
+        </div>
+</div>
+<div class="back-to-top" ></div>
+
+<div>
+
+</div>
+</body>
+<script src="/static/js/myjs.js"></script>
+{% block js %}{% endblock %}
+</html>

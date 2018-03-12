@@ -1,0 +1,14 @@
+{% extends 'blog/utils-html/model.html' %}
+{% block html %}
+
+    <div class="col-lg-2">
+    </div>
+    <div class="col-lg-8">
+    <div class="jumbotron">
+        <div class="page-header" style="text-align: center">
+            <h1>{{ content.title }} </h1>
+        </div>
+    </div>
+{{ content.blogarticle.article|safe }}
+    </div>
+{% endblock %}

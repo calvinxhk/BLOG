@@ -6,6 +6,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.db import transaction
 from django.db.models import F,Count
+from django.views import View
 from io import BytesIO
 from blog01 import models
 from utils import forms
@@ -36,7 +37,7 @@ def index(request):
 
 def register(request):
     """
-        注册函数，通过form组件验证和生成html，iframe伪造ajax上传图片，随机验证码，完成注册页面业务
+        注册函数，通过form组件验证和生成html,随机验证码，完成注册页面业务
 
         :param request:
         :return:
@@ -150,8 +151,10 @@ def home(request,id):
     个人主页,展示个人详细信息
     :return:
     """
-    data = models.BlogArticleInfo.objects.filter(blog__user_id=id).all()
     owner = models.UserInfo.objects.filter(id=id).first()
+    if owner is None:
+        return redirect('/404/')
+    data = models.BlogArticleInfo.objects.filter(blog__user_id=id).all()
     category_list = models.BlogArticleInfo.objects.filter(blog__user_id=id).values_list('category__title').annotate(
         number=Count('id')).order_by('-number')
     data_dict = {
@@ -191,7 +194,7 @@ def blog_register(request):
                 return render(request, 'blog/blog-register.html', {"form":form, "msg":msg})
         return render(request, 'blog/blog-register.html', {"form": form})
 
-
+@login_required
 def blog(request,blogname):
     """
     博客主页
@@ -200,21 +203,12 @@ def blog(request,blogname):
     :return:
     """
     if request.method == 'GET':
-        data = models.BlogInfo.objects.filter(blogname=blogname).first()
-        if data is not None:
-            return render(request,'blog/blog.html',{'blogname':blogname})
+        if request.user.userinfo.bloginfo.blogname ==blogname:
+            data = models.BlogArticleInfo.objects.filter(blog__blogname=blogname)
+            return render(request,'blog/blog.html',{'blogname':blogname,"data":data})
         else:
             return redirect('/404/')
 
-
-@login_required
-def posts(request):
-    """
-    博客管理后台
-    :param request:
-    :return:
-    """
-    return render(request,'blog/posts.html')
 
 @login_required
 def editor(request):
@@ -271,20 +265,88 @@ def upload(request):
 
 
 def blog_article(request,*args):
-    result = models.BlogArticleInfo.objects.filter(blog__blogname=args[0],id=args[1])
-    content =result.first()
-    if content is not None:
-        result.update(read_count=F('read_count')+1)
-        return render(request, 'blog/blog-article.html', {"content":content})
+    """
+    文章阅读页面
+    :param request:
+    :param args:
+    :return:
+    """
+    if request.method == 'GET':
+        result = models.BlogArticleInfo.objects.filter(blog__blogname=args[0],id=args[1])
+        content =result.first()
+        if content is not None:
+            result.update(read_count=F('read_count')+1)
+            return render(request, 'blog/blog-article.html', {"content":content})
+        else:
+            return redirect('/404')
+
+@login_required()
+def blog_update(request,*args):
+    """
+    文章更新页面
+    :param request:
+    :param args:
+    :return:
+    """
+    if request.method =='GET':
+        if request.user.userinfo.bloginfo.blogname ==args[0]:
+            result = models.BlogArticleInfo.objects.filter(blog__blogname=args[0], id=args[1]).first()
+            if result is not None:
+                content = models.BlogArticle.objects.filter(aid=result).first()
+                category = models.Category.objects.filter(blog=request.user.userinfo.bloginfo).all()
+                data = {
+                    'title':result.title,
+                    'summary':result.summary,
+                    'content':content.article
+                }
+                editor_form = forms.Article(data)
+                return render(request,'blog/blog-editor.html',{"editor_form":editor_form,"category":category,})
+        else:
+            return redirect('/404/')
     else:
-        return redirect('/404')
+        editor_form = forms.Article(request.POST, request.FILES)
+        if editor_form.is_valid():
+            category = request.POST.get('category')
+            with transaction.atomic():
+                blog = models.BlogInfo.objects.filter(user=request.user.id).first()
+                title = editor_form.cleaned_data.get('title')
+                summary = editor_form.cleaned_data.get('summary')
+                content = editor_form.cleaned_data.get('content')
+                print(content)
+                if category is not None:
+                    category = models.Category.objects.update_or_create(title=category, blog=blog)[0]
+                aid = models.BlogArticleInfo.objects.filter(blog=blog,id=args[1]).update( category=category, title=title, summary=summary)
+                models.BlogArticle.objects.filter(aid=aid).update(article=content)
+            return redirect('/home/{}/'.format(request.user.id))
+        else:
+            return render(request, 'blog/blog-editor.html', {'editor_form': editor_form})
 
 
-def information(request,id):
-    if str(request.user.id) ==str(id):
-        return render(request,'blog/information.html')
-    else:
-        return redirect('/404/')
+
+class Information(View):
+    """
+    修改个人页面
+    """
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            result = super(Information,self).dispatch(request,*args, **kwargs)
+            return result
+        else:
+            return redirect('/404/')
+
+    def get(self,request):
+        form =forms.Information()
+        return render(request,'blog/information.html',{"form":form})
+
+    def post(self,request):
+        res = forms.Information(request.POST,request.FILES,instance=request.user.userinfo)
+        if res.is_valid():
+            res.save()
+            return redirect('/home/{}/'.format(request.user.id))
+        else:
+            form = forms.Information(request.POST,request.FILES)
+            return render(request,'blog/information.html',{"form":form})
+
 
 
 def wrong(request):
@@ -296,6 +358,21 @@ def wrong(request):
     return render(request,'blog/404.html')
 
 
+
+def wait(request):
+    import os
+    base = os.path.join('media','img')
+    target_list = os.listdir(base)
+    for target in target_list:
+        if models.UserInfo.objects.filter(avatar='img/{}'.format(target)):
+            print('1')
+        else:
+            path = os.path.join('media','img',target)
+            os.remove(path)
+
+
+    return render(request,'blog/website-tips.html')
+
 urlpatterns=[
     url(r'^register/$',register),
     url(r'^check_code/',check_code),
@@ -306,11 +383,12 @@ urlpatterns=[
     url(r'^blogregister/$',blog_register),
     url(r'^blog/([a-zA-Z0-9_]+)/$',blog),
     url(r'^blog/([a-zA-Z0-9_]+)/(\d+)/$',blog_article),
-    url(r'^posts/$', posts),
+    url(r'blog_update/([a-zA-Z0-9_]+)/(\d+)/$',blog_update),
     url(r'^editor/$', editor),
     url(r'^upload/$', upload),
     url(r'^$',index),
-    url(r'^information/(\d+)/$',information)
+    url(r'^wait',wait),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)+[url(r'',wrong)]
 

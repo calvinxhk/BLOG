@@ -30,14 +30,15 @@
 
  {% block html %}
 
-
     <div class="col-lg-2"></div>
     <div class="col-lg-8">
         <h1>博客编辑区域</h1>
-        <form action="/editor/" name="article" method="POST" id="content">
+
+        <form action="" name="article" method="POST" id="content">
+
             {% csrf_token %}
-            标题{{ editor_form.title }}
-            简介{{ editor_form.summary }}
+            标题:{{ editor_form.title }}
+            简介:{{ editor_form.summary }}
             {% for i in category %}
                 <input type="radio" name="category" value="{{ i.title }}" title="文章分类">{{ i.title }}<br>
             {% endfor %}
@@ -51,4 +52,21 @@
         </div>
 
 {% endblock %}
+{% block js %}
 
+{#    {% if content %}#}
+{#        <script>#}
+{#        K.ready(function () {#}
+{#            node = K('#id div');#}
+{#            K('#id').html('{{ content }}');#}
+{#        });#}
+{#        window.ready(function () {#}
+{#            $("#id_title").val('{{ result.title }}');#}
+{#            $("#id_summary").val({{ result.summary }})#}
+{#        })#}
+{##}
+{##}
+{#        </script>#}
+{##}
+{#    {% endif %}#}
+{% endblock %}

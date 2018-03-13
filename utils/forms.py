@@ -1,7 +1,6 @@
-from django import forms
-from django.forms import Form,fields,widgets
+from django.forms import Form,fields,widgets,ModelForm,Textarea
 from django.core.exceptions import ValidationError
-
+from blog01.models import UserInfo
 
 class Register(Form):
     '''
@@ -23,23 +22,6 @@ class Register(Form):
         error_messages={'required': '密码不能为空', "invalid": '不能包含非法字符'},
         widget=widgets.PasswordInput(attrs={'class': 'text', 'placeholder': '请再次输入密码','style':
         'color: #FFFFFF !important; position:absolute; z-index:100;'}))
-    nickname=fields.CharField(
-        max_length=16,min_length=1,required=False,
-        error_messages={'required': '昵称不能为空', "invalid": '不能包含非法字符'},
-        widget=widgets.TextInput(attrs={'class':'form-control','aria-describedby':'basic-addon1'}))
-
-    email = fields.EmailField(
-        max_length=32,min_length=8,required=False,
-        error_messages={'required': '邮箱不能为空', "invalid": '请输入正确邮箱'},
-        widget=widgets.EmailInput(attrs={'class':'form-control','aria-describedby':'basic-addon1'}))
-
-    phone = fields.RegexField(
-        '^1\d{10}',required=False,
-        error_messages={'required': '手机不能为空', "invalid": '请输入正确手机号'},
-        widget=widgets.TextInput(attrs={'class':'form-control','aria-describedby':'basic-addon1'}))
-
-    avatar = fields.FileField(required=False,
-        widget=widgets.FileInput(attrs={'style':"width:200px;height:200px;opacity:0;position:absolute;top:0"}))
 
     piccode = fields.CharField(
         error_messages={'required': '验证码不能为空', "invalid": '请输入正确验证码'},
@@ -191,7 +173,6 @@ class Blog(Form):
             raise ValidationError('博客名只能由字母数字下划线组成!')
 
 
-
 class Article(Form):
     """
     博客发表表单
@@ -204,7 +185,7 @@ class Article(Form):
         widget=widgets.TextInput(attrs={'class':'form-control','aria-describedby':'basic-addon1'}))
     content = fields.CharField(
         error_messages={'required':'分类不能为空'},
-        widget=forms.Textarea(attrs={'class':'form-control','aria-describedby':'basic-addon1'}))
+        widget=Textarea(attrs={'class':'form-control','aria-describedby':'basic-addon1'}))
 
     def clean_content(self):
         content = self.cleaned_data.get('content')
@@ -213,3 +194,27 @@ class Article(Form):
         if content is None:
             raise ValidationError('请不要恶意攻击本网站！')
         return content
+
+
+class Information(ModelForm):
+    nickname = fields.CharField(
+        max_length=16, min_length=1,
+        error_messages={'required': '昵称不能为空', "invalid": '不能包含非法字符'},
+        widget=widgets.TextInput(attrs={'class': 'form-control', 'aria-describedby': 'basic-addon1'}))
+
+    email = fields.EmailField(
+        max_length=32, min_length=8,
+        error_messages={'required': '邮箱不能为空', "invalid": '请输入正确邮箱'},
+        widget=widgets.EmailInput(attrs={'class': 'form-control', 'aria-describedby': 'basic-addon1'}))
+
+    phone = fields.RegexField(
+        '^1\d{10}',
+        error_messages={'required': '手机不能为空', "invalid": '请输入正确手机号'},
+        widget=widgets.TextInput(attrs={'class': 'form-control', 'aria-describedby': 'basic-addon1'}))
+
+    avatar = fields.ImageField(
+        widget=widgets.FileInput(attrs={'style': "width:200px;height:200px;opacity:0;position:absolute;top:0"}))
+
+    class Meta:
+        model=UserInfo
+        fields = ['avatar']

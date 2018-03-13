@@ -1,1 +1,100 @@
 {% extends 'blog/utils-html/model.html' %}
+{% block html %}
+<div class="col-lg-12">
+    <form action="" title="个人信息" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="col-lg-1"></div>
+        <div class="col-lg-4">
+            <div class="input-group"  style="margin-left: 120px;border: 1px solid #b9def0;border-radius: 50%">
+                {% if user.userinfo.avatar %}
+                    <img src="/../media/{{ user.userinfo.avatar }}" name="image" style="display: inline-block;width: 200px;height: 200px;border-radius: 50%">
+                {% else %}
+                     <img src="/static/images/avatar.png" name="image" style="display: inline-block;width: 200px;height: 200px;border-radius: 50%">
+                {% endif %}
+            </div>
+            <ul class="list-group" style="padding: 50px">
+                <li class="list-group-item">个人信息</li>
+                <li class="list-group-item">昵称：{{ user.userinfo.nickname }}</li>
+                <li class="list-group-item">手机号：{{ user.userinfo.phone }}</li>
+                <li class="list-group-item">邮箱：{{ user.userinfo.email }}</li>
+            </ul>
+        </div>
+
+
+        <div class="col-lg-4">
+        <div class="input-group"  style="margin-left: 120px;border: 1px solid #b9def0;border-radius: 50%">
+            {% if user.userinfo.avatar %}
+                <img id='image' src="/../media/{{ user.userinfo.avatar }}" name="image" style="display: inline-block;width: 200px;height: 200px;border-radius: 50%">
+            {% else %}
+                <img id='image' src="/static/images/avatar.png" name="image" style="display: inline-block;width: 200px;height: 200px;border-radius: 50%">
+            {% endif %}
+            {{ form.avatar }}
+            <iframe name="window" id='window' style="display: none"></iframe>
+        </div>
+            <ul class="list-group" style="padding: 50px;width: 500px">
+                <li class="list-group-item">个人信息</li>
+                <li class="list-group-item">昵称：{{ form.nickname }}</li>
+                <li class="list-group-item">手机号：{{ form.phone }}</li>
+                <li class="list-group-item">邮箱：{{ form.email }}</li>
+                <li class="list-group-item"><button title="提交" type="submit">确认更改</button> </li>
+            </ul>
+
+        </div>
+    </form>
+</div>
+
+
+{% endblock %}
+{% block js %}
+    <script>
+       document.getElementById('id_avatar').onchange=function () {
+           var img = this.files[0];
+           var rn = /image\/jpeg|image\/png/i;
+           if (rn.test(img.type)){
+               if (  window.URL.createObjectURL){
+                   avatarshow2(img)
+               }
+               else if(new FileReader()){
+                   avatarshow(img)
+               }
+               else {
+                   avatarsend()
+               }}
+           else {alert('请选择jpeg或png图片！');this.value=''}
+       };
+       function avatarsend() {
+           var form = document.getElementById('form');
+            form.action='/register/avatar/';
+            form.enctype='multipart/form-data';
+            form.target='window';
+            form.submit();
+            var iframe = document.getElementById('window');
+                iframe.onload=function () {
+                document.getElementById('image').src='/'+this.contentWindow.document.body.innerText
+            }
+
+
+
+       }
+       function avatarshow(img) {
+       var reader = new FileReader();
+           reader.readAsDataURL(img);
+       console.log(reader.result);
+           reader.onload=function () {
+               document.getElementById('image').src=this.result
+           }
+       }
+       function avatarshow2(img) {
+           var avatarurl = window.URL.createObjectURL(img);
+           var image =document.getElementById('image');
+           image.src=avatarurl;
+           image.onload = function () {
+               window.URL.revokeObjectURL(img)
+           }
+
+
+
+       }
+
+    </script>
+{% endblock %}

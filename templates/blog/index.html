@@ -11,7 +11,8 @@
           <ul class="list-group">
               {% for c in category_list %}
                   {% if c.0 is not None %}
-                   <li class="list-group-item">{{ c.0}}<span class="badge">{{ c.1 }}</span></li>
+                      <a href="/wait/"> <li class="list-group-item">{{ c.0}}<span class="badge">{{ c.1 }}</span></li></a>
+
                   {% endif %}
               {% endfor %}
           </ul>
@@ -20,8 +21,8 @@
     <div class="col-lg-8">
     <ul class="nav nav-pills ">
       <li role="presentation"><a href="#">最新博客</a></li>
-      <li role="presentation"><a href="#">最新新闻</a></li>
-      <li role="presentation"><a href="#">深度阅读</a></li>
+      <li role="presentation"><a href="/wait/">最新新闻</a></li>
+      <li role="presentation"><a href="/wait/">深度阅读</a></li>
     </ul>
         <div class="lunbo">
             <div class="img">
@@ -47,7 +48,7 @@
 
 
         {% for obj in data %}
-        <div style="width: 100%;margin-bottom: 50px;border-bottom:gainsboro 2px solid ">
+        <div style="width: 100%;margin: 25px 0;padding:25px;border-top:gainsboro 2px solid ">
             <div style="width: 100%;height: 30px">
                 <a href="/blog/{{ obj.blog.blogname }}/{{ obj.id }}/"><h3>{{ obj.title }} <span class="label label-default">{{ obj.category.title }}</span></h3></a><br><br>
             </div>

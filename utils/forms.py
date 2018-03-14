@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from django.forms import Form,fields,widgets,ModelForm,Textarea
 from django.core.exceptions import ValidationError
 from blog01.models import UserInfo

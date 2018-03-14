@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 from PIL import Image,ImageDraw,ImageFilter,ImageFont
 import random
 def piccode(width,height,complex=30,code_num = 6):
@@ -36,11 +38,11 @@ def piccode(width,height,complex=30,code_num = 6):
     # 画字
     code_width = width/code_num
     code_list = []
-    font = ImageFont.truetype('kumo.ttf',28)
+    font = ImageFont.truetype('/usr/share/fonts/chinese/kumo.ttf',16)
     for i in range(code_num):
         text_code = chr(random.randint(97,122))
         code_list.append(text_code)
-        draw.text(xy=[i*code_width,0],text=text_code,font=font)
+        draw.text(xy=[i*code_width,0],text=text_code)
     # 调节对比度
     img = img.filter(ImageFilter.EDGE_ENHANCE_MORE)
     return img,''.join(code_list)

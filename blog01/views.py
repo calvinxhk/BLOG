@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from django.shortcuts import render,HttpResponse,redirect
 from django.conf.urls import url
 from django.contrib.auth import authenticate,login,logout
@@ -360,15 +361,6 @@ def wrong(request):
 
 
 def wait(request):
-    import os
-    base = os.path.join('media','img')
-    target_list = os.listdir(base)
-    for target in target_list:
-        if models.UserInfo.objects.filter(avatar='img/{}'.format(target)):
-            print('1')
-        else:
-            path = os.path.join('media','img',target)
-            os.remove(path)
 
 
     return render(request,'blog/website-tips.html')

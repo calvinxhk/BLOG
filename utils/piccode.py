@@ -38,7 +38,8 @@ def piccode(width,height,complex=30,code_num = 6):
     # 画字
     code_width = width/code_num
     code_list = []
-    font = ImageFont.truetype('/usr/share/fonts/chinese/kumo.ttf',16)
+
+    font = ImageFont.truetype('/usr/share/fonts/chinese/kumo.ttf',32)
     for i in range(code_num):
         text_code = chr(random.randint(97,122))
         code_list.append(text_code)

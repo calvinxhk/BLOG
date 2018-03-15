@@ -234,6 +234,7 @@ def editor(request):
                 title = editor_form.cleaned_data.get('title')
                 summary = editor_form.cleaned_data.get('summary')
                 content = editor_form.cleaned_data.get('content')
+                print(title,type(title))
                 if category is not None:
                     category = models.Category.objects.get_or_create(title=category, blog=blog)[0]
                 aid = models.BlogArticleInfo.objects.create(blog=blog,category=category,title=title,summary=summary)
@@ -382,7 +383,7 @@ urlpatterns=[
     url(r'^wait',wait),
 
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)+[url(r'',wrong)]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT,)+[url(r'',wrong)]
 
 
 

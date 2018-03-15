@@ -42,9 +42,9 @@
                   {% else %}
                   <li><a href="/blogregister/">写博客</a></li>
                   {% endif %}
-              <li class="dropdown"><a href="/home/{{ user.id }}/" style="padding: 0">
+              <li class="dropdown"><a href="/home/{{ user.id }}" style="padding: 0">
               {% if user.userinfo.avatar %}
-               <img src="/../media/{{ user.userinfo.avatar }}/" alt="头像" style="width: 50px;height: 50px;border-radius: 20%">
+               <img src="/../media/{{ user.userinfo.avatar }}" alt="头像" style="width: 50px;height: 50px;border-radius: 20%">
               {% else %}
                   <img src="/static/images/avatar.png" alt="头像" style="width: 50px;height: 50px;border-radius: 20%">
              {% endif %}</a>

@@ -7,8 +7,8 @@ class UserInfo(User):
     """
     用户信息表
     """
-    nickname = models.CharField(verbose_name='昵称',max_length=32, default='请修改昵称')
-    phone = models.CharField(verbose_name='手机',max_length=11, default='请输入手机号码')
+    nickname = models.CharField(verbose_name='昵称',max_length=32, null=True)
+    phone = models.CharField(verbose_name='手机',max_length=11, null=True)
     avatar = models.ImageField(verbose_name='头像',upload_to='img', null=True)
     fans = models.ManyToManyField(verbose_name='粉丝', to='UserInfo', related_name='f')
 
